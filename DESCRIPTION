@@ -1,0 +1,21 @@
+Package: HDMANOVA
+Type: Package
+Title: High-Dimensional MANOVA
+Version: 0.1.0
+Author: Xiaoli Kong
+Maintainer: Xiaoli Kong <kong@wayne.edu>
+Description: Tests for comparing mean vectors in two or more high-dimensional populations.
+Depends: R (>= 3.5.0)
+Imports: stats, pathviewr, flare
+Suggests: knitr, rmarkdown
+Remotes:
+    r-lib/testthat
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+NeedsCompilation: no
+VignetteBuilder: knitr
+Packaged: 2024-12-18 10:00:00 ETC;
+Date/Publication:
+

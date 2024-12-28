@@ -1,0 +1,84 @@
+---
+title: "Introduction"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+We consider the problem of assessing the equality of multiple
+high-dimensional (HD) populations or treatment outcomes, commonly
+referred to as the Multivariate Analysis of Variance (MANOVA) problem.
+
+Suppose the data involves $g$ independent groups, where $g\ge 2$, and
+the $i$-th group consists of $n_i$ of $p$-variate independent and
+identically distributed (i.i.d.) random vectors, denoted by
+$$\pmb{X}_{ij}=(X_{ij1},\ldots,X_{ijp})^t,$$ for $j=1,\ldots,n_i$.
+Denote the $i$-th group mean vector by $\pmb{\mu}_{i}$. The MANOVA
+testing problem considers the hypotheses:
+
+This package includes four testing procedures “SKtest” (Srivastava and
+Kubokawa, 2013), “CXtest” (Cai and Xia, 2014)), “HBtest” (Hu et. al.,
+2017), and “KVtest” (Kong, et. al., 2025). The input is a list of $g$
+matrices, where the $i$-th matrix has dimension $(n_i\times p)$.
+
+The function “rdatalist” is used to generate a list of sample data:
+$$X_{ijk}=\mu_{ik}+\varepsilon_{ijk},\quad 1\le i \le g,\ 1\le j\le n_i,\ 1\le k\le p,$$
+where $\mu_{ik}$ is the mean or location vectors, and the error
+$\{\varepsilon_{ijk}: k = 1,\ldots, p\}$ is generated from various
+innovation distributions
+
+- **normal**: Normal(mean = 0, sd = 1);
+- **t**: t(df = 3);
+- **cauchy**: Cauchy(location = 0, scale = 0.1);
+- **gamma**: centered Gamma(shape = 4, scale = 2).
+
+and dependence structures:
+
+- **Independent (IND)**: independent generation from the given
+  innovation distribution.
+- **Weakly Dependent (WD)**: random generation of ARMA(2, 2) model from
+  the given innovation distribution, where autoregressive coefficients
+  $\phi = (0.4, -0.1)$ and moving-average coefficients
+  $\theta = (0.2, 0.3)$;
+- **Strongly Dependent (SD)**: random generation of AR(1) model from the
+  given innovation distribution, where autoregressive coefficients
+  $\phi = 0.9$;
+- **Long-range Dependent (LD)**:
+  $\pmb{\varepsilon}_{ij}=U^t\pmb{\eta}_{ij}$, where $\pmb\eta_{ij}$ is
+  $p$ independently generated from the given innovation distribution and
+  $U^tU = A$ is the Cholesky factorization of the $p \times p$ matrix
+  $A=(a_{st})$,
+  $a_{st}=0.5[(|s-t|+1)^{1.4}+(|s-t|-1)^{1.4}-2|s-t|^{1.4}].$
+
+
+
+```{r setup}
+library(HDMANOVA)
+set.seed(123)
+X.list <- rdatalist(g = 3)
+str(X.list)
+
+SKtest(X.list)
+
+CXtest(X.list)
+
+CXtest(X.list, A = "Omega")
+
+HBtest(X.list)
+
+KVtest(X.list)
+
+KVtest(X.list, method = "MPT", L = NA)
+
+```

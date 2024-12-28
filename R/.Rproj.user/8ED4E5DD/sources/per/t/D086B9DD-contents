@@ -1,0 +1,130 @@
+
+# HDMANOVA
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of HDMANOVA is to test the equality of multi-sample high dimensional mean vectors.
+
+We consider the problem of assessing the equality of multiple
+high-dimensional (HD) populations or treatment outcomes, commonly
+referred to as the Multivariate Analysis of Variance (MANOVA) problem.
+
+Suppose the data involves $g$ independent groups, where $g\ge 2$, and
+the $i$-th group consists of $n_i$ of $p$-variate independent and
+identically distributed (i.i.d.) random vectors, denoted by
+$$\pmb{X}_{ij}=(X_{ij1},\ldots,X_{ijp})^t,$$ for $j=1,\ldots,n_i$.
+Denote the $i$-th group mean vector by $\pmb{\mu}_{i}$. The MANOVA
+testing problem considers the hypotheses:
+
+This package includes four testing procedures “SKtest” (Srivastava and
+Kubokawa, 2013), “CXtest” (Cai and Xia, 2014)), “HBtest” (Hu et. al.,
+2017), and “KVtest” (Kong, et. al., 2025). The input is a list of $g$
+matrices, where the $i$-th matrix has dimension $(n_i\times p)$.
+
+The function “rdatalist” is used to generate a list of sample data:
+$$X_{ijk}=\mu_{ik}+\varepsilon_{ijk},\quad 1\le i \le g,\ 1\le j\le n_i,\ 1\le k\le p,$$
+where $\mu_{ik}$ is the mean or location vectors, and the error
+$\{\varepsilon_{ijk}: k = 1,\ldots, p\}$ is generated from various
+innovation distributions
+
+- **normal**: Normal(mean = 0, sd = 1);
+- **t**: t(df = 3);
+- **cauchy**: Cauchy(location = 0, scale = 0.1);
+- **gamma**: centered Gamma(shape = 4, scale = 2).
+
+and dependence structures:
+
+- **Independent (IND)**: independent generation from the given
+  innovation distribution.
+- **Weakly Dependent (WD)**: random generation of ARMA(2, 2) model from
+  the given innovation distribution, where autoregressive coefficients
+  $\phi = (0.4, -0.1)$ and moving-average coefficients
+  $\theta = (0.2, 0.3)$;
+- **Strongly Dependent (SD)**: random generation of AR(1) model from the
+  given innovation distribution, where autoregressive coefficients
+  $\phi = 0.9$;
+- **Long-range Dependent (LD)**:
+  $\pmb{\varepsilon}_{ij}=U^t\pmb{\eta}_{ij}$, where $\pmb\eta_{ij}$ is
+  $p$ independently generated from the given innovation distribution and
+  $U^tU = A$ is the Cholesky factorization of the $p \times p$ matrix
+  $A=(a_{st})$,
+  $a_{st}=0.5[(|s-t|+1)^{1.4}+(|s-t|-1)^{1.4}-2|s-t|^{1.4}].$
+
+
+## Installation
+
+You can install the development version of HDMANOVA like so:
+
+``` r
+remotes::install_github("Kong-WayneState/HDMANOVA")
+```
+
+## Example
+
+This is a basic example which shows you how to solve a common problem:
+
+``` r
+library(HDMANOVA)
+## basic example code
+
+set.seed(123)
+X.list <- rdatalist(g = 3)
+str(X.list)
+#> List of 3
+#>  $ : num [1:50, 1:100] -0.5605 -0.7104 2.1988 -0.7152 -0.0736 ...
+#>  $ : num [1:50, 1:100] -0.494 0.254 1.068 -0.108 -0.604 ...
+#>  $ : num [1:50, 1:100] 2.371 -0.12 1.008 0.508 0.953 ...
+
+SKtest(X.list)
+#> $statistic
+#> [1] 0.07726602
+#> 
+#> $p.value
+#> [1] 0.469206
+
+CXtest(X.list)
+#> $statistic
+#> [1] 15.10297
+#> 
+#> $p.value
+#> [1] 0.4785073
+
+CXtest(X.list, A = "Omega")
+#> $statistic
+#> [1] 19.25311
+#> 
+#> $p.value
+#> [1] 0.1506127
+
+HBtest(X.list)
+#> $Statistic
+#> [1] -0.001000385
+#> 
+#> $p.value
+#> [1] 0.5003991
+
+KVtest(X.list)
+#> $Statistic
+#> [1] 0.1878805
+#> 
+#> $p.value
+#> [1] 0.4254852
+#> 
+#> $window
+#> [1] 10
+
+KVtest(X.list, method = "MPT", L = NA)
+#> $Statistic
+#> [1] 0.2170077
+#> 
+#> $p.value
+#> [1] 0.4141012
+#> 
+#> $window
+#> [1] 1
+
+```
+
+## License
+This package is licensed under MIT license.
