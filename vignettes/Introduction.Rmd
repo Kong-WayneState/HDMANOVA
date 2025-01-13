@@ -23,9 +23,11 @@ referred to as the Multivariate Analysis of Variance (MANOVA) problem.
 Suppose the data involves $g$ independent groups, where $g\ge 2$, and
 the $i$-th group consists of $n_i$ of $p$-variate independent and
 identically distributed (i.i.d.) random vectors, denoted by
-$$\pmb{X}_{ij}=(X_{ij1},\ldots,X_{ijp})^t,$$ for $j=1,\ldots,n_i$.
+$$\pmb{X}_{ij}=(X_{ij1},\ldots,X_{ijp})^t,$$ for $i=1,\ldots,g, j=1,\ldots,n_i$.
 Denote the $i$-th group mean vector by $\pmb{\mu}_{i}$. The MANOVA
-testing problem considers the hypotheses:
+testing problem considers the hypothesis:
+$$H_0: \pmb{\mu}_1 = \cdots =\pmb{\mu}_g,$$
+$$H_{a}: \pmb{\mu}_{i}\neq \pmb{\mu}_{j}, \text{ for at least on pair of }  i, j.$$
 
 This package includes four testing procedures “SKtest” (Srivastava and
 Kubokawa, 2013), “CXtest” (Cai and Xia, 2014)), “HBtest” (Hu et. al.,
