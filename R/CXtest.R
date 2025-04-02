@@ -65,11 +65,6 @@ CXtest <- function(X.list, A = "Identity", pkg = "flare", biased=FALSE){
       sink()
       Omega.est <- Omega.select$opt.icov
     }
-    # Sigma.eig <- base::eigen(Sigma.est)
-    # s <- Sigma.eig$values
-    # s.new <- sapply(s, function(x){ifelse(x<=0, log(p)/n, x)}) #adjust for non-definite case
-    # v = Sigma.eig$vectors
-    # Sigma.est = v %*% diag(s.new) %*% t(v)
   } else if (A == "Sigma") { # estimating Sigma
     X.ctr <- lapply(X.list, scale, center=TRUE, scale = FALSE)
     lambda.mat.list <- lapply(X.ctr, function(X){((t(X^2)%*%(X^2))+nrow(X)*S.pooled^2-2*(t(X)%*%X)*S.pooled)/n})
