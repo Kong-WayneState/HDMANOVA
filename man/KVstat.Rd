@@ -4,10 +4,19 @@
 \alias{KVstat}
 \title{High dimensional MANOVA}
 \usage{
-KVstat(X.list)
+KVstat(X.list, method = c("MPT", "GCT"), weight.fun = "parz", Lg = NA, Lm = NA)
 }
 \arguments{
 \item{X.list}{list of \eqn{g (\ge 2)} matrices from the samples.}
+
+\item{method}{process to be used for estimating scale parameter.\describe{
+\item{"GCT"}{generalized component test (Gregory et. al., 2015);}
+\item{"MPT"}{more powerful test (Zhang and Wang, 2021).}
+}}
+
+\item{weight.fun}{window weight function, "parz" for Parzen weight and "trapez" for trapezoid weight.}
+
+\item{L}{value of the window width. If \code{NA}, the elbow method is used for searching it.}
 }
 \value{
 value of \eqn{F_n}, center estimates \eqn{\hat\xi_{n1}} and \eqn{\hat\xi_{n2}}, selected window width \eqn{L}, and scale estemates \eqn{\hat\zeta_n} and \eqn{\hat\tau_n}.

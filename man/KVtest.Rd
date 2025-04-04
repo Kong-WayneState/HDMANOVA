@@ -4,7 +4,7 @@
 \alias{KVtest}
 \title{High dimensional MANOVA}
 \usage{
-KVtest(X.list, method = "GCT", L = 10, npower = 0)
+KVtest(X.list, method = "GCT", weight.fun = "parz", L = 10, npower = 0)
 }
 \arguments{
 \item{X.list}{list of \eqn{g (\ge 2)} matrices from the samples.}
@@ -13,6 +13,8 @@ KVtest(X.list, method = "GCT", L = 10, npower = 0)
 \item{"GCT"}{generalized component test (Gregory et. al., 2015);}
 \item{"MPT"}{more powerful test (Zhang and Wang, 2021).}
 }}
+
+\item{weight.fun}{window weight function, "parz" for Parzen weight and "trapez" for trapezoid weight.}
 
 \item{L}{value of the window width. If \code{NA}, the elbow method is used for searching it.}
 
