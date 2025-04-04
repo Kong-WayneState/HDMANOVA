@@ -7,6 +7,7 @@
 #' \item{"GCT"}{generalized component test (Gregory et. al., 2015);}
 #' \item{"MPT"}{more powerful test (Zhang and Wang, 2021).}
 #' }
+#' @param weight.fun window weight function, "parz" for Parzen weight and "trapez" for trapezoid weight.
 #' @param L value of the window width. If \code{NA}, the elbow method is used for searching it.
 #' @param npower power (negative) 0, 1, or 2 of n at which the center is estimated.
 #'
@@ -28,7 +29,7 @@
 #'
 
 
-KVtest <- function(X.list, method = "GCT", L = 10, npower = 0){
+KVtest <- function(X.list, method = "GCT", weight.fun = "parz", L = 10, npower = 0){
   g <- length(X.list)
   pvec <- unlist(lapply(X.list, ncol))
   if (all(pvec != mean(pvec))){stop("dimensions are not equal!")}
@@ -51,16 +52,22 @@ KVtest <- function(X.list, method = "GCT", L = 10, npower = 0){
     if(is.na(L)){
       gamma <- as.vector(stats::acf(F.stat, lag.max = p-1, plot = FALSE, type = "covariance")$acf)
       L <- pathviewr::find_curve_elbow(data.frame(index = 1:p, gamma = gamma)) - 1
-      var.est <- sum(c(1, 2*parz(L))*gamma[1:(L+1)])
+      var.est <- sum(c(1, 2*get(weight.fun)(L))*gamma[1:(L+1)])
     }else{
       gamma <- as.vector(stats::acf(F.stat, lag.max = L, plot = FALSE, type = "covariance")$acf)
-      var.est <- sum(c(1, 2*parz(L))*gamma)
+      var.est <- sum(c(1, 2*get(weight.fun)(L))*gamma)
     }
   }
   if(method == "MPT"){
     if(is.na(L)){
       gamma <- CovEst(X.list = X.list, lag.max = p-1)
       L <- pathviewr::find_curve_elbow(data.frame(index = 1:p, gamma = gamma)) - 1
+      # L = 1
+      # while(L < floor(2*sqrt(p))){
+      #   if(gamma[L+1] > min((g-1)/sqrt(p), 1/(g-1)/sqrt(n))){
+      #     L = L + 1
+      #   }else break
+      #}
       var.est <- gamma[1] + 2*sum(gamma[2:(L+1)])
     }else{
       gamma <- CovEst(X.list, lag.max = L)
@@ -81,6 +88,12 @@ KVtest <- function(X.list, method = "GCT", L = 10, npower = 0){
 #' @noRd
 parz <- function(L){
   sapply(1:L, function(i){ifelse(i<(L/2), 1-6*(i/L)^2+6*(i/L)^3, 2*(1-(i/L))^3)})
+}
+
+#' @keywords internal
+#' @noRd
+trapez <- function(L){
+  sapply(1:L, function(i){ifelse(i<=ceiling(L/2), 1, 1-(i-ceiling(L/2))/(L-ceiling(L/2)))})
 }
 
 #' @keywords internal
